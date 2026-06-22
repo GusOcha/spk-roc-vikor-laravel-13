@@ -6,7 +6,6 @@ use App\Http\Requests\PenilaianRequest;
 use App\Models\Alternatif;
 use App\Models\Kriteria;
 use App\Models\Penilaian;
-use App\Models\SubKriteria;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -16,19 +15,15 @@ class PenilaianController extends Controller
 {
     public function index(): Response
     {
-        // Existing scores as a lookup: [alternatif_id][kriteria_id] = sub_kriteria_id
+        // Existing scores as a lookup: [alternatif_id][kriteria_id] = nilai
         $existing = [];
-        foreach (Penilaian::query()->get(['alternatif_id', 'kriteria_id', 'sub_kriteria_id']) as $row) {
-            $existing[$row->alternatif_id][$row->kriteria_id] = $row->sub_kriteria_id;
+        foreach (Penilaian::query()->get(['alternatif_id', 'kriteria_id', 'nilai']) as $row) {
+            $existing[$row->alternatif_id][$row->kriteria_id] = $row->nilai;
         }
 
         return Inertia::render('penilaian/index', [
             'alternatif' => Alternatif::query()->orderBy('id')->get(['id', 'nama']),
-            'kriteria' => Kriteria::query()->orderBy('prioritas')->get(['id', 'kode', 'keterangan']),
-            'subKriteria' => SubKriteria::query()
-                ->orderBy('kriteria_id')
-                ->orderByDesc('nilai')
-                ->get(['id', 'kriteria_id', 'deskripsi', 'nilai']),
+            'kriteria' => Kriteria::query()->orderBy('prioritas')->get(['id', 'kode', 'keterangan', 'satuan']),
             'penilaian' => $existing,
         ]);
     }
@@ -37,14 +32,14 @@ class PenilaianController extends Controller
     {
         $alternatifId = $request->integer('alternatif_id');
 
-        /** @var array<int, int> $nilai  Map of kriteria_id => sub_kriteria_id */
+        /** @var array<int, float|int|string> $nilai  Map of kriteria_id => nilai */
         $nilai = $request->validated('nilai');
 
         DB::transaction(function () use ($alternatifId, $nilai): void {
-            foreach ($nilai as $kriteriaId => $subKriteriaId) {
+            foreach ($nilai as $kriteriaId => $value) {
                 Penilaian::updateOrCreate(
                     ['alternatif_id' => $alternatifId, 'kriteria_id' => $kriteriaId],
-                    ['sub_kriteria_id' => $subKriteriaId],
+                    ['nilai' => $value],
                 );
             }
         });

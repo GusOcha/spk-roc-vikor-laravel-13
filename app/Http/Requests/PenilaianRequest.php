@@ -21,7 +21,7 @@ class PenilaianRequest extends FormRequest
         return [
             'alternatif_id' => ['required', 'integer', 'exists:alternatif,id'],
             'nilai' => ['required', 'array'],
-            'nilai.*' => ['required', 'integer', 'exists:sub_kriteria,id'],
+            'nilai.*' => ['required', 'numeric'],
         ];
     }
 }

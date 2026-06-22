@@ -1,6 +1,6 @@
 import { Head, router } from '@inertiajs/react';
 import { Save } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
     Card,
@@ -9,13 +9,7 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 import {
     Table,
     TableBody,
@@ -26,38 +20,26 @@ import {
 } from '@/components/ui/table';
 
 type Alternatif = { id: number; nama: string };
-type Kriteria = { id: number; kode: string; keterangan: string };
-type SubKriteria = {
+type Kriteria = {
     id: number;
-    kriteria_id: number;
-    deskripsi: string;
-    nilai: number;
+    kode: string;
+    keterangan: string;
+    satuan: string | null;
 };
 
 type Props = {
     alternatif: Alternatif[];
     kriteria: Kriteria[];
-    subKriteria: SubKriteria[];
-    /** [alternatif_id][kriteria_id] = sub_kriteria_id */
+    /** [alternatif_id][kriteria_id] = nilai */
     penilaian: Record<number, Record<number, number>>;
 };
 
 export default function PenilaianIndex({
     alternatif,
     kriteria,
-    subKriteria,
     penilaian,
 }: Props) {
-    // Group sub-criteria by their criterion for the dropdowns.
-    const subByKriteria = useMemo(() => {
-        const map: Record<number, SubKriteria[]> = {};
-        for (const s of subKriteria) {
-            (map[s.kriteria_id] ??= []).push(s);
-        }
-        return map;
-    }, [subKriteria]);
-
-    // Working copy of the matrix: matrix[altId][kritId] = subId (as string).
+    // Working copy of the matrix: matrix[altId][kritId] = nilai (as string).
     const [matrix, setMatrix] = useState<Record<number, Record<number, string>>>(
         () => {
             const initial: Record<number, Record<number, string>> = {};
@@ -65,7 +47,8 @@ export default function PenilaianIndex({
                 initial[a.id] = {};
                 for (const k of kriteria) {
                     const val = penilaian[a.id]?.[k.id];
-                    initial[a.id][k.id] = val ? String(val) : '';
+                    initial[a.id][k.id] =
+                        val === undefined || val === null ? '' : String(val);
                 }
             }
             return initial;
@@ -74,10 +57,10 @@ export default function PenilaianIndex({
 
     const [savingId, setSavingId] = useState<number | null>(null);
 
-    function setCell(altId: number, kritId: number, subId: string) {
+    function setCell(altId: number, kritId: number, value: string) {
         setMatrix((prev) => ({
             ...prev,
-            [altId]: { ...prev[altId], [kritId]: subId },
+            [altId]: { ...prev[altId], [kritId]: value },
         }));
     }
 
@@ -85,7 +68,7 @@ export default function PenilaianIndex({
         const row = matrix[altId];
         const nilai: Record<number, number> = {};
         for (const k of kriteria) {
-            if (row[k.id]) nilai[k.id] = Number(row[k.id]);
+            if (row[k.id] !== '') nilai[k.id] = Number(row[k.id]);
         }
         router.post(
             '/penilaian',
@@ -99,7 +82,7 @@ export default function PenilaianIndex({
     }
 
     const incomplete = (altId: number) =>
-        kriteria.some((k) => !matrix[altId]?.[k.id]);
+        kriteria.some((k) => (matrix[altId]?.[k.id] ?? '') === '');
 
     if (alternatif.length === 0 || kriteria.length === 0) {
         return (
@@ -108,8 +91,8 @@ export default function PenilaianIndex({
                 <div className="p-4">
                     <Card>
                         <CardContent className="py-10 text-center text-muted-foreground">
-                            Lengkapi data kriteria, sub kriteria, dan alternatif
-                            terlebih dahulu.
+                            Lengkapi data kriteria dan alternatif terlebih
+                            dahulu.
                         </CardContent>
                     </Card>
                 </div>
@@ -125,7 +108,7 @@ export default function PenilaianIndex({
                     <CardHeader>
                         <CardTitle>Penilaian Alternatif</CardTitle>
                         <CardDescription>
-                            Pilih nilai sub kriteria untuk setiap alternatif,
+                            Masukkan nilai tiap alternatif pada setiap kriteria,
                             lalu simpan per baris.
                         </CardDescription>
                     </CardHeader>
@@ -140,6 +123,9 @@ export default function PenilaianIndex({
                                         {kriteria.map((k) => (
                                             <TableHead key={k.id}>
                                                 {k.kode}
+                                                {k.satuan
+                                                    ? ` (${k.satuan})`
+                                                    : ''}
                                             </TableHead>
                                         ))}
                                         <TableHead className="text-right">
@@ -155,41 +141,25 @@ export default function PenilaianIndex({
                                             </TableCell>
                                             {kriteria.map((k) => (
                                                 <TableCell key={k.id}>
-                                                    <Select
+                                                    <Input
+                                                        type="number"
+                                                        inputMode="decimal"
+                                                        step="any"
+                                                        className="w-28"
+                                                        placeholder="—"
                                                         value={
                                                             matrix[a.id]?.[
                                                                 k.id
                                                             ] ?? ''
                                                         }
-                                                        onValueChange={(v) =>
+                                                        onChange={(e) =>
                                                             setCell(
                                                                 a.id,
                                                                 k.id,
-                                                                v,
+                                                                e.target.value,
                                                             )
                                                         }
-                                                    >
-                                                        <SelectTrigger className="w-28">
-                                                            <SelectValue placeholder="—" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            {(
-                                                                subByKriteria[
-                                                                    k.id
-                                                                ] ?? []
-                                                            ).map((s) => (
-                                                                <SelectItem
-                                                                    key={s.id}
-                                                                    value={String(
-                                                                        s.id,
-                                                                    )}
-                                                                >
-                                                                    {s.deskripsi}{' '}
-                                                                    ({s.nilai})
-                                                                </SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select>
+                                                    />
                                                 </TableCell>
                                             ))}
                                             <TableCell className="text-right">
@@ -214,8 +184,8 @@ export default function PenilaianIndex({
                             </Table>
                         </div>
                         <p className="mt-3 text-xs text-muted-foreground">
-                            Angka dalam tanda kurung adalah nilai yang dipakai
-                            pada matriks keputusan.
+                            Nilai yang dimasukkan dipakai langsung pada matriks
+                            keputusan VIKOR.
                         </p>
                     </CardContent>
                 </Card>

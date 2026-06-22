@@ -43,6 +43,7 @@ type Kriteria = {
     kode: string;
     keterangan: string;
     jenis: 'benefit' | 'cost';
+    satuan: string | null;
     prioritas: number;
     bobot: number | null;
 };
@@ -51,6 +52,7 @@ type FormState = {
     kode: string;
     keterangan: string;
     jenis: 'benefit' | 'cost';
+    satuan: string;
     prioritas: number | string;
 };
 
@@ -58,6 +60,7 @@ const emptyForm: FormState = {
     kode: '',
     keterangan: '',
     jenis: 'benefit',
+    satuan: '',
     prioritas: '',
 };
 
@@ -77,6 +80,7 @@ function KriteriaDialog({
                       kode: editing.kode,
                       keterangan: editing.keterangan,
                       jenis: editing.jenis,
+                      satuan: editing.satuan ?? '',
                       prioritas: editing.prioritas,
                   }
                 : emptyForm,
@@ -160,18 +164,30 @@ function KriteriaDialog({
                                 <InputError message={errors.jenis} />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="prioritas">Prioritas</Label>
+                                <Label htmlFor="satuan">Satuan</Label>
                                 <Input
-                                    id="prioritas"
-                                    type="number"
-                                    min={1}
-                                    value={data.prioritas}
+                                    id="satuan"
+                                    value={data.satuan}
                                     onChange={(e) =>
-                                        setData('prioritas', e.target.value)
+                                        setData('satuan', e.target.value)
                                     }
+                                    placeholder="cc, kg, juta, ..."
                                 />
-                                <InputError message={errors.prioritas} />
+                                <InputError message={errors.satuan} />
                             </div>
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="prioritas">Prioritas</Label>
+                            <Input
+                                id="prioritas"
+                                type="number"
+                                min={1}
+                                value={data.prioritas}
+                                onChange={(e) =>
+                                    setData('prioritas', e.target.value)
+                                }
+                            />
+                            <InputError message={errors.prioritas} />
                         </div>
                     </div>
 
@@ -245,6 +261,7 @@ export default function KriteriaIndex({ kriteria }: { kriteria: Kriteria[] }) {
                                         <TableHead>Kode</TableHead>
                                         <TableHead>Keterangan</TableHead>
                                         <TableHead>Jenis</TableHead>
+                                        <TableHead>Satuan</TableHead>
                                         <TableHead className="text-center">
                                             Prioritas
                                         </TableHead>
@@ -260,7 +277,7 @@ export default function KriteriaIndex({ kriteria }: { kriteria: Kriteria[] }) {
                                     {kriteria.length === 0 && (
                                         <TableRow>
                                             <TableCell
-                                                colSpan={6}
+                                                colSpan={7}
                                                 className="py-8 text-center text-muted-foreground"
                                             >
                                                 Belum ada data.
@@ -285,6 +302,15 @@ export default function KriteriaIndex({ kriteria }: { kriteria: Kriteria[] }) {
                                                 >
                                                     {row.jenis}
                                                 </Badge>
+                                            </TableCell>
+                                            <TableCell>
+                                                {row.satuan ? (
+                                                    row.satuan
+                                                ) : (
+                                                    <span className="text-muted-foreground">
+                                                        —
+                                                    </span>
+                                                )}
                                             </TableCell>
                                             <TableCell className="text-center">
                                                 {row.prioritas}

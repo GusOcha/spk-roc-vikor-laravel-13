@@ -21,6 +21,7 @@ class KriteriaRequest extends FormRequest
             'kode' => ['required', 'string', 'max:20'],
             'keterangan' => ['required', 'string', 'max:150'],
             'jenis' => ['required', Rule::in(['benefit', 'cost'])],
+            'satuan' => ['nullable', 'string', 'max:50'],
             'prioritas' => ['required', 'integer', 'min:1'],
         ];
     }

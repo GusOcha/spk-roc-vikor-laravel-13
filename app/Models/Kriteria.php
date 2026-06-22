@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $kode
  * @property string $keterangan
  * @property string $jenis
+ * @property string|null $satuan
  * @property int $prioritas
  * @property float|null $bobot
  */
@@ -21,6 +22,7 @@ class Kriteria extends Model
         'kode',
         'keterangan',
         'jenis',
+        'satuan',
         'prioritas',
         'bobot',
     ];
@@ -31,14 +33,6 @@ class Kriteria extends Model
             'prioritas' => 'integer',
             'bobot' => 'float',
         ];
-    }
-
-    /**
-     * @return HasMany<SubKriteria, $this>
-     */
-    public function subKriteria(): HasMany
-    {
-        return $this->hasMany(SubKriteria::class);
     }
 
     /**

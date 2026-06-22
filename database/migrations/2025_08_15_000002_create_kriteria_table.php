@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('kode', 20);
             $table->string('keterangan', 150);
             $table->enum('jenis', ['benefit', 'cost'])->default('benefit');
+            $table->string('satuan', 50)->nullable();
             $table->unsignedInteger('prioritas');
             $table->decimal('bobot', 10, 6)->nullable();
             $table->timestamps();

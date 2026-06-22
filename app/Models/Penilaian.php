@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property int $alternatif_id
  * @property int $kriteria_id
- * @property int $sub_kriteria_id
+ * @property float $nilai
  */
 class Penilaian extends Model
 {
@@ -18,7 +18,7 @@ class Penilaian extends Model
     protected $fillable = [
         'alternatif_id',
         'kriteria_id',
-        'sub_kriteria_id',
+        'nilai',
     ];
 
     protected function casts(): array
@@ -26,7 +26,7 @@ class Penilaian extends Model
         return [
             'alternatif_id' => 'integer',
             'kriteria_id' => 'integer',
-            'sub_kriteria_id' => 'integer',
+            'nilai' => 'float',
         ];
     }
 
@@ -44,13 +44,5 @@ class Penilaian extends Model
     public function kriteria(): BelongsTo
     {
         return $this->belongsTo(Kriteria::class);
-    }
-
-    /**
-     * @return BelongsTo<SubKriteria, $this>
-     */
-    public function subKriteria(): BelongsTo
-    {
-        return $this->belongsTo(SubKriteria::class);
     }
 }

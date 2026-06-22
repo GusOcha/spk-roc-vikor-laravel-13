@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Alternatif;
 use App\Models\Hasil;
 use App\Models\Kriteria;
+use App\Models\Penilaian;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -23,7 +24,7 @@ class PerhitunganService
      * Compute ROC weights from criteria priorities and store them on each
      * criterion's `bobot` column.
      *
-     * @return array<int, float>  Map of kriteria id => weight.
+     * @return array<int, float> Map of kriteria id => weight.
      */
     public function generateBobot(): array
     {
@@ -46,7 +47,7 @@ class PerhitunganService
      * Run the VIKOR calculation against the current data and persist the
      * ranking to the `hasil` table.
      *
-     * @return array<string, mixed>  Display-ready computation with labels.
+     * @return array<string, mixed> Display-ready computation with labels.
      */
     public function hitung(): array
     {
@@ -104,17 +105,17 @@ class PerhitunganService
 
     /**
      * Build the decision matrix: matrix[alternatif_id][kriteria_id] = the
-     * numeric value of the sub-criterion chosen for that pair.
+     * numeric value entered for that pair.
      *
      * @return array<int, array<int, float>>
      */
     public function buildMatrix(): array
     {
-        $penilaian = \App\Models\Penilaian::query()->with('subKriteria')->get();
+        $penilaian = Penilaian::query()->get();
 
         $matrix = [];
         foreach ($penilaian as $row) {
-            $matrix[$row->alternatif_id][$row->kriteria_id] = (float) ($row->subKriteria?->nilai ?? 0);
+            $matrix[$row->alternatif_id][$row->kriteria_id] = (float) $row->nilai;
         }
 
         return $matrix;

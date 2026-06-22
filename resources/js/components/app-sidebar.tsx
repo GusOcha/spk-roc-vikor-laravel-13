@@ -6,7 +6,6 @@ import {
     ClipboardList,
     FileText,
     LayoutGrid,
-    Layers,
     SlidersHorizontal,
     Users,
 } from 'lucide-react';
@@ -33,7 +32,6 @@ export function AppSidebar() {
         ...(isAdmin
             ? [
                   { title: 'Kriteria', href: '/kriteria', icon: SlidersHorizontal },
-                  { title: 'Sub Kriteria', href: '/sub-kriteria', icon: Layers },
                   { title: 'Alternatif', href: '/alternatif', icon: Boxes },
                   { title: 'Penilaian', href: '/penilaian', icon: ClipboardList },
                   { title: 'Perhitungan', href: '/perhitungan', icon: Calculator },

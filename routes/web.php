@@ -7,7 +7,6 @@ use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PenilaianController;
 use App\Http\Controllers\PerhitunganController;
-use App\Http\Controllers\SubKriteriaController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,11 +26,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('kriteria/generate', [KriteriaController::class, 'generate'])->name('kriteria.generate');
         Route::put('kriteria/{kriteria}', [KriteriaController::class, 'update'])->name('kriteria.update');
         Route::delete('kriteria/{kriteria}', [KriteriaController::class, 'destroy'])->name('kriteria.destroy');
-
-        Route::get('sub-kriteria', [SubKriteriaController::class, 'index'])->name('sub-kriteria.index');
-        Route::post('sub-kriteria', [SubKriteriaController::class, 'store'])->name('sub-kriteria.store');
-        Route::put('sub-kriteria/{subKriteria}', [SubKriteriaController::class, 'update'])->name('sub-kriteria.update');
-        Route::delete('sub-kriteria/{subKriteria}', [SubKriteriaController::class, 'destroy'])->name('sub-kriteria.destroy');
 
         Route::get('alternatif', [AlternatifController::class, 'index'])->name('alternatif.index');
         Route::post('alternatif', [AlternatifController::class, 'store'])->name('alternatif.store');

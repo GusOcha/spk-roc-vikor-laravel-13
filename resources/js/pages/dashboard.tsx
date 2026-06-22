@@ -3,7 +3,6 @@ import {
     ArrowRight,
     Boxes,
     ClipboardList,
-    Layers,
     SlidersHorizontal,
     Trophy,
 } from 'lucide-react';
@@ -18,7 +17,6 @@ import {
 type DashboardProps = {
     stats: {
         kriteria: number;
-        subKriteria: number;
         alternatif: number;
         sudahDihitung: boolean;
     };
@@ -27,13 +25,11 @@ type DashboardProps = {
 
 const statCards = [
     { key: 'kriteria', label: 'Kriteria', icon: SlidersHorizontal },
-    { key: 'subKriteria', label: 'Sub Kriteria', icon: Layers },
     { key: 'alternatif', label: 'Alternatif', icon: Boxes },
 ] as const;
 
 const steps = [
     { title: 'Kelola Kriteria', desc: 'Tentukan kriteria & prioritasnya, lalu generate bobot (ROC).', href: '/kriteria' },
-    { title: 'Sub Kriteria', desc: 'Definisikan skala penilaian tiap kriteria.', href: '/sub-kriteria' },
     { title: 'Alternatif', desc: 'Daftarkan alternatif yang akan dinilai.', href: '/alternatif' },
     { title: 'Penilaian', desc: 'Beri nilai tiap alternatif pada setiap kriteria.', href: '/penilaian' },
     { title: 'Perhitungan', desc: 'Jalankan metode VIKOR untuk perankingan.', href: '/perhitungan' },

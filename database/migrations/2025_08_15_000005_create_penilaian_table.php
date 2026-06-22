@@ -10,8 +10,8 @@ return new class extends Migration
      * Run the migrations.
      *
      * Each row is the score given to one alternative on one criterion.
-     * The chosen score is expressed by referencing a sub-criterion, whose
-     * numeric `nilai` becomes the value used in the VIKOR decision matrix.
+     * The numeric `nilai` is entered directly and becomes the value used in
+     * the VIKOR decision matrix.
      */
     public function up(): void
     {
@@ -19,7 +19,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('alternatif_id')->constrained('alternatif')->cascadeOnDelete();
             $table->foreignId('kriteria_id')->constrained('kriteria')->cascadeOnDelete();
-            $table->foreignId('sub_kriteria_id')->constrained('sub_kriteria')->cascadeOnDelete();
+            $table->decimal('nilai', 12, 4);
             $table->timestamps();
 
             $table->unique(['alternatif_id', 'kriteria_id']);

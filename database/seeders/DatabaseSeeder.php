@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Alternatif;
 use App\Models\Kriteria;
 use App\Models\Penilaian;
-use App\Models\SubKriteria;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -18,8 +17,8 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      *
-     * Reproduces the original CodeIgniter sample case (e-commerce platform
-     * selection) so the migrated app starts with the same demo data.
+     * Reproduces the original sample case (e-commerce platform selection) so
+     * the migrated app starts with demo data.
      */
     public function run(): void
     {
@@ -52,41 +51,24 @@ class DatabaseSeeder extends Seeder
 
     private function seedDecisionData(): void
     {
-        // [old_id => [kode, keterangan, jenis, prioritas, bobot]]
+        // [old_id => [kode, keterangan, jenis, satuan, prioritas, bobot]]
         $kriteriaRows = [
-            34 => ['K1', 'User Interface', 'benefit', 3, 0.157],
-            35 => ['K2', 'Kelengkapan Produk', 'benefit', 1, 0.457],
-            36 => ['K3', 'Respon Pelayanan', 'benefit', 2, 0.257],
-            37 => ['K4', 'Proses Transaksi', 'cost', 4, 0.09],
-            38 => ['K5', 'Jasa Pengiriman', 'benefit', 5, 0.04],
+            34 => ['K1', 'User Interface', 'benefit', 'poin', 3, 0.157],
+            35 => ['K2', 'Kelengkapan Produk', 'benefit', 'poin', 1, 0.457],
+            36 => ['K3', 'Respon Pelayanan', 'benefit', 'poin', 2, 0.257],
+            37 => ['K4', 'Proses Transaksi', 'cost', 'menit', 4, 0.09],
+            38 => ['K5', 'Jasa Pengiriman', 'benefit', 'poin', 5, 0.04],
         ];
 
         $kriteriaMap = [];
-        foreach ($kriteriaRows as $oldId => [$kode, $keterangan, $jenis, $prioritas, $bobot]) {
+        foreach ($kriteriaRows as $oldId => [$kode, $keterangan, $jenis, $satuan, $prioritas, $bobot]) {
             $kriteriaMap[$oldId] = Kriteria::create([
                 'kode' => $kode,
                 'keterangan' => $keterangan,
                 'jenis' => $jenis,
+                'satuan' => $satuan,
                 'prioritas' => $prioritas,
                 'bobot' => $bobot,
-            ])->id;
-        }
-
-        // [old_id => [old_kriteria_id, deskripsi, nilai]]
-        $subKriteriaRows = [
-            224 => [34, '41', 41], 225 => [34, '42', 42], 226 => [34, '43', 43], 227 => [34, '46', 46],
-            228 => [35, '41', 41], 229 => [35, '44', 44], 230 => [35, '45', 45], 231 => [35, '47', 47], 232 => [35, '48', 48],
-            233 => [36, '38', 38], 234 => [36, '40', 40], 235 => [36, '43', 43],
-            236 => [37, '40', 40], 237 => [37, '41', 41], 238 => [37, '43', 43], 239 => [37, '44', 44],
-            240 => [38, '36', 36], 241 => [38, '41', 41], 242 => [38, '42', 42], 243 => [38, '45', 45],
-        ];
-
-        $subKriteriaMap = [];
-        foreach ($subKriteriaRows as $oldId => [$oldKriteriaId, $deskripsi, $nilai]) {
-            $subKriteriaMap[$oldId] = SubKriteria::create([
-                'kriteria_id' => $kriteriaMap[$oldKriteriaId],
-                'deskripsi' => $deskripsi,
-                'nilai' => $nilai,
             ])->id;
         }
 
@@ -104,20 +86,20 @@ class DatabaseSeeder extends Seeder
             $alternatifMap[$oldId] = Alternatif::create(['nama' => $nama])->id;
         }
 
-        // [old_alternatif_id, old_kriteria_id, old_sub_kriteria_id]
+        // [old_alternatif_id, old_kriteria_id, nilai]
         $penilaianRows = [
-            [59, 34, 226], [59, 35, 228], [59, 36, 234], [59, 37, 239], [59, 38, 241],
-            [60, 34, 225], [60, 35, 229], [60, 36, 235], [60, 37, 237], [60, 38, 240],
-            [61, 34, 224], [61, 35, 230], [61, 36, 234], [61, 37, 238], [61, 38, 242],
-            [62, 34, 227], [62, 35, 232], [62, 36, 235], [62, 37, 236], [62, 38, 243],
-            [63, 34, 224], [63, 35, 231], [63, 36, 233], [63, 37, 237], [63, 38, 242],
+            [59, 34, 43], [59, 35, 41], [59, 36, 40], [59, 37, 44], [59, 38, 41],
+            [60, 34, 42], [60, 35, 44], [60, 36, 43], [60, 37, 41], [60, 38, 36],
+            [61, 34, 41], [61, 35, 45], [61, 36, 40], [61, 37, 43], [61, 38, 42],
+            [62, 34, 46], [62, 35, 48], [62, 36, 43], [62, 37, 40], [62, 38, 45],
+            [63, 34, 41], [63, 35, 47], [63, 36, 38], [63, 37, 41], [63, 38, 42],
         ];
 
-        foreach ($penilaianRows as [$oldAlt, $oldKrit, $oldSub]) {
+        foreach ($penilaianRows as [$oldAlt, $oldKrit, $nilai]) {
             Penilaian::create([
                 'alternatif_id' => $alternatifMap[$oldAlt],
                 'kriteria_id' => $kriteriaMap[$oldKrit],
-                'sub_kriteria_id' => $subKriteriaMap[$oldSub],
+                'nilai' => $nilai,
             ]);
         }
     }

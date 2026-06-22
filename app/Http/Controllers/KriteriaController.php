@@ -16,7 +16,7 @@ class KriteriaController extends Controller
         return Inertia::render('kriteria/index', [
             'kriteria' => Kriteria::query()
                 ->orderBy('prioritas')
-                ->get(['id', 'kode', 'keterangan', 'jenis', 'prioritas', 'bobot']),
+                ->get(['id', 'kode', 'keterangan', 'jenis', 'satuan', 'prioritas', 'bobot']),
         ]);
     }
 

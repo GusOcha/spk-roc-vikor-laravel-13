@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Alternatif;
 use App\Models\Hasil;
 use App\Models\Kriteria;
-use App\Models\SubKriteria;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -21,7 +20,6 @@ class DashboardController extends Controller
         return Inertia::render('dashboard', [
             'stats' => [
                 'kriteria' => Kriteria::query()->count(),
-                'subKriteria' => SubKriteria::query()->count(),
                 'alternatif' => Alternatif::query()->count(),
                 'sudahDihitung' => Hasil::query()->exists(),
             ],
