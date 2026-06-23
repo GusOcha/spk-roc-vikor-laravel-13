@@ -51,7 +51,11 @@ class PerhitunganService
      */
     public function hitung(): array
     {
-        $kriteria = Kriteria::query()->orderBy('prioritas')->get();
+        // Display order follows the criterion code (K1..Kn), not ROC priority.
+        $kriteria = Kriteria::query()
+            ->get()
+            ->sortBy('kode', SORT_NATURAL | SORT_FLAG_CASE)
+            ->values();
         $alternatif = Alternatif::query()->orderBy('id')->get();
 
         $matrix = $this->buildMatrix();

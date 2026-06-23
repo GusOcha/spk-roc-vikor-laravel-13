@@ -12,16 +12,16 @@ class PenilaianRequest extends FormRequest
     }
 
     /**
-     * Scores for a single alternative across every criterion.
+     * The full decision matrix: penilaian[alternatif_id][kriteria_id] = nilai.
      *
      * @return array<string, mixed>
      */
     public function rules(): array
     {
         return [
-            'alternatif_id' => ['required', 'integer', 'exists:alternatif,id'],
-            'nilai' => ['required', 'array'],
-            'nilai.*' => ['required', 'numeric'],
+            'penilaian' => ['required', 'array'],
+            'penilaian.*' => ['array'],
+            'penilaian.*.*' => ['nullable', 'numeric'],
         ];
     }
 }

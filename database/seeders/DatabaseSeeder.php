@@ -53,11 +53,11 @@ class DatabaseSeeder extends Seeder
     {
         // [old_id => [kode, keterangan, jenis, satuan, prioritas, bobot]]
         $kriteriaRows = [
-            34 => ['K1', 'User Interface', 'benefit', 'poin', 3, 0.157],
-            35 => ['K2', 'Kelengkapan Produk', 'benefit', 'poin', 1, 0.457],
-            36 => ['K3', 'Respon Pelayanan', 'benefit', 'poin', 2, 0.257],
-            37 => ['K4', 'Proses Transaksi', 'cost', 'menit', 4, 0.09],
-            38 => ['K5', 'Jasa Pengiriman', 'benefit', 'poin', 5, 0.04],
+            34 => ['K1', 'Harga Beli', 'cost', 'Juta IDR', 3, 0.157],
+            35 => ['K2', 'Konsumsi Bahan Bakar', 'cost', 'L/100km', 2, 0.257],
+            36 => ['K3', 'Kapasitas Penumpang', 'benefit', 'Orang', 5, 0.04],
+            37 => ['K4', 'Biaya Perawatan Tahunan', 'cost', 'Juta IDR', 1, 0.457],
+            38 => ['K5', 'Ketersediaan Suku Cadang', 'benefit', '1-10', 4, 0.09],
         ];
 
         $kriteriaMap = [];
@@ -74,11 +74,14 @@ class DatabaseSeeder extends Seeder
 
         // [old_id => nama]
         $alternatifRows = [
-            59 => 'Shopee',
-            60 => 'Lazada',
-            61 => 'Bukalapak',
-            62 => 'Facebook Marketplace',
-            63 => 'Tokopedia',
+            59 => 'Mitsubishi Xpander',
+            60 => 'Toyota Avanza',
+            61 => 'Daihatsu Xenia',
+            62 => 'Suzuki Ertiga',
+            63 => 'Toyota Kijang',
+            64 => 'Suzuki APV',
+            65 => 'Daihatsu Sigra',
+            66 => 'Daihatsu Luxio',
         ];
 
         $alternatifMap = [];
@@ -87,20 +90,20 @@ class DatabaseSeeder extends Seeder
         }
 
         // [old_alternatif_id, old_kriteria_id, nilai]
-        $penilaianRows = [
-            [59, 34, 43], [59, 35, 41], [59, 36, 40], [59, 37, 44], [59, 38, 41],
-            [60, 34, 42], [60, 35, 44], [60, 36, 43], [60, 37, 41], [60, 38, 36],
-            [61, 34, 41], [61, 35, 45], [61, 36, 40], [61, 37, 43], [61, 38, 42],
-            [62, 34, 46], [62, 35, 48], [62, 36, 43], [62, 37, 40], [62, 38, 45],
-            [63, 34, 41], [63, 35, 47], [63, 36, 38], [63, 37, 41], [63, 38, 42],
-        ];
+        // $penilaianRows = [
+        //     [59, 34, 43], [59, 35, 41], [59, 36, 40], [59, 37, 44], [59, 38, 41],
+        //     [60, 34, 42], [60, 35, 44], [60, 36, 43], [60, 37, 41], [60, 38, 36],
+        //     [61, 34, 41], [61, 35, 45], [61, 36, 40], [61, 37, 43], [61, 38, 42],
+        //     [62, 34, 46], [62, 35, 48], [62, 36, 43], [62, 37, 40], [62, 38, 45],
+        //     [63, 34, 41], [63, 35, 47], [63, 36, 38], [63, 37, 41], [63, 38, 42],
+        // ];
 
-        foreach ($penilaianRows as [$oldAlt, $oldKrit, $nilai]) {
-            Penilaian::create([
-                'alternatif_id' => $alternatifMap[$oldAlt],
-                'kriteria_id' => $kriteriaMap[$oldKrit],
-                'nilai' => $nilai,
-            ]);
-        }
+        // foreach ($penilaianRows as [$oldAlt, $oldKrit, $nilai]) {
+        //     Penilaian::create([
+        //         'alternatif_id' => $alternatifMap[$oldAlt],
+        //         'kriteria_id' => $kriteriaMap[$oldKrit],
+        //         'nilai' => $nilai,
+        //     ]);
+        // }
     }
 }

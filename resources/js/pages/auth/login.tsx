@@ -22,7 +22,7 @@ export default function Login({ status, canResetPassword }: Props) {
         <>
             <Head title="Log in" />
 
-            <PasskeyVerify />
+            {/* <PasskeyVerify /> */}
 
             <Form
                 {...store.form()}
@@ -50,7 +50,7 @@ export default function Login({ status, canResetPassword }: Props) {
                             <div className="grid gap-2">
                                 <div className="flex items-center">
                                     <Label htmlFor="password">Password</Label>
-                                    {canResetPassword && (
+                                    {/* {canResetPassword && (
                                         <TextLink
                                             href={request()}
                                             className="ml-auto text-sm"
@@ -58,7 +58,7 @@ export default function Login({ status, canResetPassword }: Props) {
                                         >
                                             Forgot your password?
                                         </TextLink>
-                                    )}
+                                    )} */}
                                 </div>
                                 <PasswordInput
                                     id="password"
@@ -92,12 +92,12 @@ export default function Login({ status, canResetPassword }: Props) {
                             </Button>
                         </div>
 
-                        <div className="text-center text-sm text-muted-foreground">
+                        {/* <div className="text-center text-sm text-muted-foreground">
                             Don't have an account?{' '}
                             <TextLink href={register()} tabIndex={5}>
                                 Sign up
                             </TextLink>
-                        </div>
+                        </div> */}
                     </>
                 )}
             </Form>

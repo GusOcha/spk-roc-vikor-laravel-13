@@ -8,9 +8,14 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PenilaianController;
 use App\Http\Controllers\PerhitunganController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::inertia('/', 'welcome')->name('home');
+Route::get('/', function () {
+    return Auth::check()
+        ? redirect()->route('dashboard')
+        : redirect()->route('login');
+})->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -34,6 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get('penilaian', [PenilaianController::class, 'index'])->name('penilaian.index');
         Route::post('penilaian', [PenilaianController::class, 'store'])->name('penilaian.store');
+        Route::delete('penilaian', [PenilaianController::class, 'clear'])->name('penilaian.clear');
 
         Route::get('perhitungan', [PerhitunganController::class, 'index'])->name('perhitungan.index');
 

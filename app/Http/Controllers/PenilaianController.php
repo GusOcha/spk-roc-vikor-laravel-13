@@ -23,28 +23,44 @@ class PenilaianController extends Controller
 
         return Inertia::render('penilaian/index', [
             'alternatif' => Alternatif::query()->orderBy('id')->get(['id', 'nama']),
-            'kriteria' => Kriteria::query()->orderBy('prioritas')->get(['id', 'kode', 'keterangan', 'satuan']),
+            'kriteria' => Kriteria::query()
+                ->get(['id', 'kode', 'keterangan', 'satuan'])
+                ->sortBy('kode', SORT_NATURAL | SORT_FLAG_CASE)
+                ->values(),
             'penilaian' => $existing,
         ]);
     }
 
     public function store(PenilaianRequest $request): RedirectResponse
     {
-        $alternatifId = $request->integer('alternatif_id');
+        /** @var array<int, array<int, float|int|string|null>> $matrix  penilaian[alternatif_id][kriteria_id] = nilai */
+        $matrix = $request->validated('penilaian');
 
-        /** @var array<int, float|int|string> $nilai  Map of kriteria_id => nilai */
-        $nilai = $request->validated('nilai');
+        DB::transaction(function () use ($matrix): void {
+            foreach ($matrix as $alternatifId => $row) {
+                foreach ($row as $kriteriaId => $value) {
+                    if ($value === null || $value === '') {
+                        continue;
+                    }
 
-        DB::transaction(function () use ($alternatifId, $nilai): void {
-            foreach ($nilai as $kriteriaId => $value) {
-                Penilaian::updateOrCreate(
-                    ['alternatif_id' => $alternatifId, 'kriteria_id' => $kriteriaId],
-                    ['nilai' => $value],
-                );
+                    Penilaian::updateOrCreate(
+                        ['alternatif_id' => $alternatifId, 'kriteria_id' => $kriteriaId],
+                        ['nilai' => $value],
+                    );
+                }
             }
         });
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Penilaian berhasil disimpan.']);
+
+        return to_route('penilaian.index');
+    }
+
+    public function clear(): RedirectResponse
+    {
+        Penilaian::query()->delete();
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Semua penilaian berhasil dihapus.']);
 
         return to_route('penilaian.index');
     }
